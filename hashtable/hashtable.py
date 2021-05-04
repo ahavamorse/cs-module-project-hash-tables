@@ -1,7 +1,32 @@
+# A Hash function turns a string into a number
+# Must be deterministic (same input always returns same output)
+
+# String.encode() turns it into bytes (numbers)
+# Adding the unicode values of the numbers creates a deterministic result
+# This would run in O(n) where n is the length of the string (this will very rarely be huge)
+# We then map the result to an index in an array by using % length of array (modulo to find remainder)
+
+# Summary of steps to insert a key and value into a hash table:
+# - hash key to convert it to a number
+# - take that number and MOD it by the size of the hash table
+# - insert the value into the index given by the MOD operation
+
+# Summary of steps to retrieve a value given a specific key from a hash table:
+# - hash the key to convert it to a number
+# - use MOD to find the index within the array
+# - use this new index to find the value in the array
+
+def hash_fn(s):
+    print(s)
+    for char in s:
+        print(char)
+
+
 class HashTableEntry:
     """
     Linked List hash table key/value pair
     """
+
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -22,7 +47,7 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
+        pass
 
     def get_num_slots(self):
         """
@@ -36,7 +61,6 @@ class HashTable:
         """
         # Your code here
 
-
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
@@ -44,7 +68,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
 
     def fnv1(self, key):
         """
@@ -55,7 +78,6 @@ class HashTable:
 
         # Your code here
 
-
     def djb2(self, key):
         """
         DJB2 hash, 32-bit
@@ -64,13 +86,12 @@ class HashTable:
         """
         # Your code here
 
-
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -83,7 +104,6 @@ class HashTable:
         """
         # Your code here
 
-
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -93,7 +113,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
 
     def get(self, key):
         """
@@ -105,7 +124,6 @@ class HashTable:
         """
         # Your code here
 
-
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
@@ -114,7 +132,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
 
 
 if __name__ == "__main__":
