@@ -16,10 +16,6 @@
 # - use MOD to find the index within the array
 # - use this new index to find the value in the array
 
-def hash_fn(s):
-    print(s)
-    for char in s:
-        print(char)
 
 
 class HashTableEntry:
@@ -84,7 +80,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for char in key:
+            hash = ((hash << 5) + hash) + ord(char)
+        return hash & 0xFFFFFFFF
 
     def hash_index(self, key):
         """
@@ -102,8 +101,13 @@ class HashTable:
 
         Implement this.
         """
-        if self.values[key]:
-            self.values[key].next = HashTableEntry(key, value)
+        index = self.hash_index(key)
+
+        self.values[index] = HashTableEntry(key, value)
+        # if self.values[index]:
+        #     self.values[index].next = HashTableEntry(key, value)
+        # else:
+        #     self.values[index] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -113,10 +117,13 @@ class HashTable:
 
         Implement this.
         """
-        if self.values[key]:
-            self.values[key] = None
+        index = self.hash_index(key)
+
+        if self.values[index]:
+            self.values[index] = None
         else:
             print("Nothing is stored at that key")
+
 
 
     def get(self, key):
@@ -127,7 +134,11 @@ class HashTable:
 
         Implement this.
         """
-        return self.values[key]
+        index = self.hash_index(key)
+        if self.values[index]:
+            return self.values[index].value
+        else:
+            return None
 
     def resize(self, new_capacity):
         """
@@ -139,37 +150,103 @@ class HashTable:
         # Your code here
 
 
-if __name__ == "__main__":
-    ht = HashTable(8)
+# if __name__ == "__main__":
+#     ht = HashTable(8)
+#
+#     ht.put("line_1", "'Twas brillig, and the slithy toves")
+#     ht.put("line_2", "Did gyre and gimble in the wabe:")
+#     ht.put("line_3", "All mimsy were the borogoves,")
+#     ht.put("line_4", "And the mome raths outgrabe.")
+#     ht.put("line_5", '"Beware the Jabberwock, my son!')
+#     ht.put("line_6", "The jaws that bite, the claws that catch!")
+#     ht.put("line_7", "Beware the Jubjub bird, and shun")
+#     ht.put("line_8", 'The frumious Bandersnatch!"')
+#     ht.put("line_9", "He took his vorpal sword in hand;")
+#     ht.put("line_10", "Long time the manxome foe he sought--")
+#     ht.put("line_11", "So rested he by the Tumtum tree")
+#     ht.put("line_12", "And stood awhile in thought.")
+#
+#     print("")
+#
+#     # Test storing beyond capacity
+#     for i in range(1, 13):
+#         print(ht.get(f"line_{i}"))
+#
+#     # Test resizing
+#     old_capacity = ht.get_num_slots()
+#     ht.resize(ht.capacity * 2)
+#     new_capacity = ht.get_num_slots()
+#
+#     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+#
+#     # Test if data intact after resizing
+#     for i in range(1, 13):
+#         print(ht.get(f"line_{i}"))
+#
+#     print("")
 
-    ht.put("line_1", "'Twas brillig, and the slithy toves")
-    ht.put("line_2", "Did gyre and gimble in the wabe:")
-    ht.put("line_3", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
-    ht.put("line_5", '"Beware the Jabberwock, my son!')
-    ht.put("line_6", "The jaws that bite, the claws that catch!")
-    ht.put("line_7", "Beware the Jubjub bird, and shun")
-    ht.put("line_8", 'The frumious Bandersnatch!"')
-    ht.put("line_9", "He took his vorpal sword in hand;")
-    ht.put("line_10", "Long time the manxome foe he sought--")
-    ht.put("line_11", "So rested he by the Tumtum tree")
-    ht.put("line_12", "And stood awhile in thought.")
 
-    print("")
+import unittest
+from hashtable import HashTable
 
-    # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+class TestHashTable(unittest.TestCase):
 
-    # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+    def test_hash_table_insertion_and_retrieval(self):
+        ht = HashTable(0x10000)
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+        ht.put("key-0", "val-0")
+        ht.put("key-1", "val-1")
+        ht.put("key-2", "val-2")
 
-    # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+        return_value = ht.get("key-0")
+        self.assertTrue(return_value == "val-0")
+        return_value = ht.get("key-1")
+        self.assertTrue(return_value == "val-1")
+        return_value = ht.get("key-2")
+        self.assertTrue(return_value == "val-2")
 
-    print("")
+    def test_hash_table_pution_overwrites_correctly(self):
+        ht = HashTable(0x10000)
+
+        ht.put("key-0", "val-0")
+        ht.put("key-1", "val-1")
+        ht.put("key-2", "val-2")
+
+        ht.put("key-0", "new-val-0")
+        ht.put("key-1", "new-val-1")
+        ht.put("key-2", "new-val-2")
+
+        return_value = ht.get("key-0")
+        self.assertTrue(return_value == "new-val-0")
+        return_value = ht.get("key-1")
+        self.assertTrue(return_value == "new-val-1")
+        return_value = ht.get("key-2")
+        self.assertTrue(return_value == "new-val-2")
+
+    def test_hash_table_removes_correctly(self):
+        ht = HashTable(0x10000)
+
+        ht.put("key-0", "val-0")
+        ht.put("key-1", "val-1")
+        ht.put("key-2", "val-2")
+
+        return_value = ht.get("key-0")
+        self.assertTrue(return_value == "val-0")
+        return_value = ht.get("key-1")
+        self.assertTrue(return_value == "val-1")
+        return_value = ht.get("key-2")
+        self.assertTrue(return_value == "val-2")
+
+        ht.delete("key-2")
+        ht.delete("key-1")
+        ht.delete("key-0")
+
+        return_value = ht.get("key-0")
+        self.assertTrue(return_value is None)
+        return_value = ht.get("key-1")
+        self.assertTrue(return_value is None)
+        return_value = ht.get("key-2")
+        self.assertTrue(return_value is None)
+
+if __name__ == '__main__':
+    unittest.main()
