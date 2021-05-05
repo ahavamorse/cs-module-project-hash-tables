@@ -46,8 +46,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-        pass
+        self.values = [None] * capacity
+        self.capacity = capacity
 
     def get_num_slots(self):
         """
@@ -59,7 +59,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -102,7 +102,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        if self.values[key]:
+            self.values[key].next = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -112,7 +113,11 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        if self.values[key]:
+            self.values[key] = None
+        else:
+            print("Nothing is stored at that key")
+
 
     def get(self, key):
         """
@@ -122,7 +127,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.values[key]
 
     def resize(self, new_capacity):
         """
