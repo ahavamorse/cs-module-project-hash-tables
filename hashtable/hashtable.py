@@ -130,15 +130,20 @@ class HashTable:
 
         Implement this.
         """
+        # index = self.hash_index(key)
+        # self.values[index] = HashTableEntry(key, value)
+
+        # Collisions
         index = self.hash_index(key)
+        if self.values[index]:
+            curr_item = self.values[index]
+            while curr_item.next:
+                if curr_item.key == key:
+                    curr_item.value = value
+                    return
+                curr_item = curr_item.next
+            curr_item.next = HashTableEntry(key, value)
 
-        # If something already exists at that index print a warning
-
-        self.values[index] = HashTableEntry(key, value)
-        # if self.values[index]:
-        #     self.values[index].next = HashTableEntry(key, value)
-        # else:
-        #     self.values[index] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -154,6 +159,7 @@ class HashTable:
             self.values[index] = None
         else:
             print("Nothing is stored at that key")
+
 
 
 
