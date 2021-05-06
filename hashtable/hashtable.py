@@ -44,7 +44,6 @@
 # - create a new array with twice (or half) the space
 # - go through the old array and rehash each item
 # - store them at the new index in the new array
-# -
 
 class HashTableEntry:
     """
@@ -193,11 +192,6 @@ class HashTable:
         # else:
         #     return None
 
-        # - hash the key to get the index
-        # - get the linked list at the index
-        # - see if the key exists in the linked list
-        # - otherwise return None
-
         index = self.hash_index(key)
         if self.values[index]:
             curr_item = self.values[index]
@@ -205,6 +199,7 @@ class HashTable:
                 if curr_item.key == key:
                     return curr_item.value
                 curr_item = curr_item.next
+            return None
 
     def resize(self, new_capacity):
         """
@@ -213,7 +208,15 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+
+        old_values = self.values
+        self.values = [HashTableEntry(None, None)] * new_capacity
+        self.capacity = new_capacity
+        for item in old_values:
+            curr_item = item
+            while item.next:
+                self.put(curr_item.key, item.value)
+                curr_item = curr_item.next
 
 
 # if __name__ == "__main__":
