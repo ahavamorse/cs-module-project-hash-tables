@@ -16,7 +16,25 @@
 # - use MOD to find the index within the array
 # - use this new index to find the value in the array
 
+# Dealing with Collisions
 
+# PUT steps to deal with collisions
+# - hash the key to get the index
+# - find the start of the linked list with the index
+# - see if the key already exists and update the value
+# - otherwise insert it into the linked list as a new HashTableEntry
+
+# GET steps to deal with collisions
+# - hash the key to get the index
+# - get the linked list at the index
+# - see if the key exists in the linked list
+# - otherwise return None
+
+# DELETE steps to deal with collisions
+# - hash the key to get the index
+# - get the linked list at the index
+# - see if the key exists in the linked list
+# - delete the node and return the value
 
 class HashTableEntry:
     """
@@ -42,7 +60,7 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.values = [None] * capacity
+        self.values = [HashTableEntry(None, None)] * capacity
         self.capacity = capacity
 
     def get_num_slots(self):
@@ -102,6 +120,8 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
+
+        # If something already exists at that index print a warning
 
         self.values[index] = HashTableEntry(key, value)
         # if self.values[index]:
