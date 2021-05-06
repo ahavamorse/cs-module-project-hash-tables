@@ -18,23 +18,33 @@
 
 # Dealing with Collisions
 
-# PUT steps to deal with collisions
+# PUT steps to deal with collisions         O(m) * m is the number of items in the largest linked list
 # - hash the key to get the index
 # - find the start of the linked list with the index
 # - see if the key already exists and update the value
 # - otherwise insert it into the linked list as a new HashTableEntry
 
-# GET steps to deal with collisions
+# GET steps to deal with collisions         O(m) * m is the number of items in the largest linked list
 # - hash the key to get the index
 # - get the linked list at the index
 # - see if the key exists in the linked list
 # - otherwise return None
 
-# DELETE steps to deal with collisions
+# DELETE steps to deal with collisions          O(m) * m is the number of items in the largest linked list
 # - hash the key to get the index
 # - get the linked list at the index
 # - see if the key exists in the linked list
 # - delete the node and return the value
+
+# RESIZE steps to deal with large amounts of data           O(n) * n is the number of stored items
+# - when the load factor (items / capacity) becomes too large (over 0.7)
+#     - keep track of number of items with a variable (PUT doesn't always add)
+#     - check load factor after each addition and deletion
+#         - resize to make larger or smaller (should be between 0.2 and 0.7)
+# - create a new array with twice (or half) the space
+# - go through the old array and rehash each item
+# - store them at the new index in the new array
+# -
 
 class HashTableEntry:
     """
