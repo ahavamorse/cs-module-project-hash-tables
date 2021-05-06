@@ -93,6 +93,12 @@ class HashTable:
         """
         return self.num_of_items / self.capacity
 
+    def check_size(self):
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+        elif self.get_load_factor() < 0.2:
+            self.resize(self.capacity // 2)
+
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
@@ -136,6 +142,8 @@ class HashTable:
         index = self.hash_index(key)
         if self.values[index]:
             curr_item = self.values[index]
+            if curr_item.key == key:
+                curr_item.value = value
             while curr_item.next:
                 if curr_item.key == key:
                     curr_item.value = value
@@ -144,6 +152,8 @@ class HashTable:
         old_head = self.values[index]
         self.values[index] = HashTableEntry(key, value)
         self.values[index].next = old_head
+        self.num_of_items += 1
+        self.check_size()
 
 
     def delete(self, key):
@@ -166,6 +176,8 @@ class HashTable:
             curr_item = self.values[index]
             if curr_item.key == key:
                 self.values[index] = curr_item.next
+                self.num_of_items -= 1
+                self.check_size()
                 return
 
             prev_item = curr_item
@@ -174,6 +186,8 @@ class HashTable:
             while curr_item.next:
                 if curr_item.key == key:
                     prev_item.next = curr_item.next
+                    self.num_of_items -= 1
+                    self.check_size()
                     return
                 curr_item = curr_item.next
 
