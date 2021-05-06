@@ -16,7 +16,34 @@
 # - use MOD to find the index within the array
 # - use this new index to find the value in the array
 
+# Dealing with Collisions
 
+# PUT steps to deal with collisions         O(m) * m is the number of items in the largest linked list
+# - hash the key to get the index
+# - find the start of the linked list with the index
+# - see if the key already exists and update the value
+# - otherwise insert it into the linked list as a new HashTableEntry
+
+# GET steps to deal with collisions         O(m) * m is the number of items in the largest linked list
+# - hash the key to get the index
+# - get the linked list at the index
+# - see if the key exists in the linked list
+# - otherwise return None
+
+# DELETE steps to deal with collisions          O(m) * m is the number of items in the largest linked list
+# - hash the key to get the index
+# - get the linked list at the index
+# - see if the key exists in the linked list
+# - and delete the node
+
+# RESIZE steps to deal with large amounts of data           O(n) * n is the number of stored items
+# - when the load factor (items / capacity) becomes too large (over 0.7)
+#     - keep track of number of items with a variable (PUT doesn't always add)
+#     - check load factor after each addition and deletion
+#         - resize to make larger or smaller (should be between 0.2 and 0.7)
+# - create a new array with twice (or half) the space
+# - go through the old array and rehash each item
+# - store them at the new index in the new array
 
 class HashTableEntry:
     """
@@ -44,6 +71,7 @@ class HashTable:
     def __init__(self, capacity):
         self.values = [None] * capacity
         self.capacity = capacity
+        self.num_of_items = 0
 
     def get_num_slots(self):
         """
@@ -63,7 +91,13 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.num_of_items / self.capacity
+
+    def check_size(self):
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
+        elif self.get_load_factor() < 0.2:
+            self.resize(self.capacity // 2)
 
     def fnv1(self, key):
         """
@@ -101,13 +135,26 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
+        # index = self.hash_index(key)
+        # self.values[index] = HashTableEntry(key, value)
 
+        # Collisions
+        index = self.hash_index(key)
+        if self.values[index]:
+            curr_item = self.values[index]
+            if curr_item.key == key:
+                curr_item.value = value
+            while curr_item.next:
+                if curr_item.key == key:
+                    curr_item.value = value
+                    return
+                curr_item = curr_item.next
+        old_head = self.values[index]
         self.values[index] = HashTableEntry(key, value)
-        # if self.values[index]:
-        #     self.values[index].next = HashTableEntry(key, value)
-        # else:
-        #     self.values[index] = HashTableEntry(key, value)
+        self.values[index].next = old_head
+        self.num_of_items += 1
+        self.check_size()
+
 
     def delete(self, key):
         """
@@ -117,12 +164,33 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
+        # index = self.hash_index(key)
+        #
+        # if self.values[index]:
+        #     self.values[index] = None
+        # else:
+        #     print("Nothing is stored at that key")
 
+        index = self.hash_index(key)
         if self.values[index]:
-            self.values[index] = None
-        else:
-            print("Nothing is stored at that key")
+            curr_item = self.values[index]
+            if curr_item.key == key:
+                self.values[index] = curr_item.next
+                self.num_of_items -= 1
+                self.check_size()
+                return
+
+            prev_item = curr_item
+            curr_item = curr_item.next
+
+            while curr_item.next:
+                if curr_item.key == key:
+                    prev_item.next = curr_item.next
+                    self.num_of_items -= 1
+                    self.check_size()
+                    return
+                curr_item = curr_item.next
+
 
 
 
@@ -134,11 +202,23 @@ class HashTable:
 
         Implement this.
         """
+        # index = self.hash_index(key)
+        # if self.values[index]:
+        #     return self.values[index].value
+        # else:
+        #     return None
+
         index = self.hash_index(key)
         if self.values[index]:
-            return self.values[index].value
-        else:
-            return None
+            curr_item = self.values[index]
+            if curr_item.key == key:
+                return curr_item.value
+
+            while curr_item.next:
+                if curr_item.next.key == key:
+                    return curr_item.next.value
+                curr_item = curr_item.next
+        return None
 
     def resize(self, new_capacity):
         """
@@ -147,7 +227,18 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+
+        old_values = self.values
+        self.capacity = new_capacity
+        print(f"new capacity = {self.capacity}")
+        self.values = [None] * self.capacity
+        for item in old_values:
+            if item:
+                self.put(item.key, item.value)
+                curr_item = item
+                while curr_item.next:
+                    self.put(curr_item.next.key, curr_item.next.value)
+                    curr_item = curr_item.next
 
 
 # if __name__ == "__main__":
@@ -184,3 +275,4 @@ class HashTable:
 #         print(ht.get(f"line_{i}"))
 #
 #     print("")
+
