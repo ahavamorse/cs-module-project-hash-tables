@@ -229,8 +229,9 @@ class HashTable:
         """
 
         old_values = self.values
-        self.values = [None] * new_capacity
         self.capacity = new_capacity
+        print(f"new capacity = {self.capacity}")
+        self.values = [None] * self.capacity
         for item in old_values:
             if item:
                 self.put(item.key, item.value)
@@ -274,3 +275,4 @@ class HashTable:
 #         print(ht.get(f"line_{i}"))
 #
 #     print("")
+
