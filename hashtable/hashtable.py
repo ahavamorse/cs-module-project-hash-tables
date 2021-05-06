@@ -34,7 +34,7 @@
 # - hash the key to get the index
 # - get the linked list at the index
 # - see if the key exists in the linked list
-# - delete the node and return the value
+# - and delete the node
 
 # RESIZE steps to deal with large amounts of data           O(n) * n is the number of stored items
 # - when the load factor (items / capacity) becomes too large (over 0.7)
@@ -163,9 +163,18 @@ class HashTable:
         index = self.hash_index(key)
         if self.values[index]:
             curr_item = self.values[index]
+            if curr_item.key == key:
+                self.values[index] = curr_item.next
+                return
+
+            prev_item = curr_item
+            curr_item = curr_item.next
+
             while curr_item.next:
                 if curr_item.key == key:
-                    curr_item = curr_item.next
+                    prev_item.next = curr_item.next
+                    return
+                curr_item = curr_item.next
 
 
 
@@ -178,11 +187,20 @@ class HashTable:
 
         Implement this.
         """
+        # index = self.hash_index(key)
+        # if self.values[index]:
+        #     return self.values[index].value
+        # else:
+        #     return None
+
+        # - hash the key to get the index
+        # - get the linked list at the index
+        # - see if the key exists in the linked list
+        # - otherwise return None
+
         index = self.hash_index(key)
         if self.values[index]:
-            return self.values[index].value
-        else:
-            return None
+            curr_item = self.values[index]
 
     def resize(self, new_capacity):
         """
