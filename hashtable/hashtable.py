@@ -201,6 +201,10 @@ class HashTable:
         index = self.hash_index(key)
         if self.values[index]:
             curr_item = self.values[index]
+            while curr_item.next:
+                if curr_item.key == key:
+                    return curr_item.value
+                curr_item = curr_item.next
 
     def resize(self, new_capacity):
         """
