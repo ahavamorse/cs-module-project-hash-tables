@@ -153,12 +153,19 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
+        # index = self.hash_index(key)
+        #
+        # if self.values[index]:
+        #     self.values[index] = None
+        # else:
+        #     print("Nothing is stored at that key")
 
+        index = self.hash_index(key)
         if self.values[index]:
-            self.values[index] = None
-        else:
-            print("Nothing is stored at that key")
+            curr_item = self.values[index]
+            while curr_item.next:
+                if curr_item.key == key:
+                    curr_item = curr_item.next
 
 
 
