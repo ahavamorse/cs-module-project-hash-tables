@@ -151,6 +151,7 @@ class HashTable:
                 curr_item = curr_item.next
         old_head = self.values[index]
         self.values[index] = HashTableEntry(key, value)
+
         self.values[index].next = old_head
         self.num_of_items += 1
         self.check_size()
