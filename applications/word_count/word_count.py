@@ -1,5 +1,36 @@
 def word_count(s):
-    # Your code here
+    dict = {}
+
+    new_string = s.replace('"', "")
+    new_string = new_string.replace(':', "")
+    new_string = new_string.replace(';', "")
+    new_string = new_string.replace(',', "")
+    new_string = new_string.replace('.', "")
+    new_string = new_string.replace('-', "")
+    new_string = new_string.replace('+', "")
+    new_string = new_string.replace('=', "")
+    new_string = new_string.replace('/', "")
+    new_string = new_string.replace('\\', "")
+    new_string = new_string.replace('|', "")
+    new_string = new_string.replace('[', "")
+    new_string = new_string.replace(']', "")
+    new_string = new_string.replace('{', "")
+    new_string = new_string.replace('}', "")
+    new_string = new_string.replace('(', "")
+    new_string = new_string.replace(')', "")
+    new_string = new_string.replace('*', "")
+    new_string = new_string.replace('^', "")
+    new_string = new_string.replace('&', "")
+
+    words = new_string.split()
+
+    for word in words:
+        word = word.lower()
+        if word in dict:
+            dict[word] += 1
+        else:
+            dict[word] = 1
+    return dict
 
 
 
