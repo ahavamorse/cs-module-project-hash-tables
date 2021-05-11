@@ -1,5 +1,14 @@
 def no_dups(s):
-    # Your code here
+    dict = {}
+    split_s = s.split()
+    no_dups_s = []
+
+    for word in split_s:
+        if word not in dict:
+            dict[word] = 1
+            no_dups_s.append(word)
+
+    return " ".join(no_dups_s)
 
 
 
